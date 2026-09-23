@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản Phẩm - SneakerVault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- 1. HEADER / NAVBAR -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 gap-4">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-orange-500/20">
+                        S
+                    </div>
+                    <span class="text-2xl font-black tracking-wider uppercase text-white">SNEAKER<span class="text-orange-500">VAULT</span></span>
+                </a>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8 font-semibold text-sm">
+                    <a href="index.html" class="text-slate-300 hover:text-orange-500 transition-colors">Trang Chủ</a>
+                    <a href="products.html" class="text-orange-500 hover:text-orange-400 transition-colors">Sản Phẩm</a>
+                    <a href="index.html#promo" class="text-slate-300 hover:text-orange-500 transition-colors">Khuyến Mãi</a>
+                    <a href="index.html#footer" class="text-slate-300 hover:text-orange-500 transition-colors">Liên Hệ</a>
+                </nav>
+
+                <!-- Search Input Header -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden sm:block w-48 lg:w-64">
+                        <input type="text" id="searchInput" placeholder="Tìm tên giày..." class="w-full bg-slate-800 text-slate-200 text-sm rounded-full pl-10 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-orange-500">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        <div class="mb-6">
+            <h1 class="text-3xl font-black text-white uppercase tracking-wide">Tất Cả Sản Phẩm</h1>
+            <p class="text-slate-400 text-sm mt-1">Tìm kiếm và lựa chọn đôi sneaker yêu thích của bạn</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- SIDEBAR BỘ LỌC CỘT TRÁI -->
+            <aside class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 h-fit space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <h2 class="font-bold text-lg text-white"><i class="fa-solid fa-filter text-orange-500 mr-2"></i> Bộ Lọc</h2>
+                    <button onclick="loadProducts()" class="text-xs text-slate-400 hover:text-orange-500">Xóa tất cả</button>
+                </div>
+
+                <!-- Lọc Thương Hiệu -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Thương Hiệu</h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="brand" value="" checked onchange="filterProducts()" class="accent-orange-500"> Tất cả
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="brand" value="Nike" onchange="filterProducts()" class="accent-orange-500"> Nike
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="brand" value="Adidas" onchange="filterProducts()" class="accent-orange-500"> Adidas
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="brand" value="Jordan" onchange="filterProducts()" class="accent-orange-500"> Jordan
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="brand" value="Puma" onchange="filterProducts()" class="accent-orange-500"> Puma
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Lọc Danh Mục -->
+                <div class="border-t border-slate-800 pt-4">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Danh Mục</h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="category" value="" checked onchange="filterProducts()" class="accent-orange-500"> Tất cả
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="category" value="Running" onchange="filterProducts()" class="accent-orange-500"> Running
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="category" value="Lifestyle" onchange="filterProducts()" class="accent-orange-500"> Lifestyle
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-orange-400">
+                            <input type="radio" name="category" value="Basketball" onchange="filterProducts()" class="accent-orange-500"> Basketball
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- KHUNG HIỂN THỊ SẢN PHẨM CỘT PHẢI (3 CỘT KHÓA) -->
+            <!-- KHUNG HIỂN THỊ SẢN PHẨM CỘT PHẢI (3 CỘT KHÓA) -->
+            <section class="lg:col-span-3 flex flex-col justify-between">
+                <!-- Lưới hiển thị sản phẩm -->
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dữ liệu từ API sẽ render vào đây -->
+                </div>
+
+                <!-- KHUNG NÚT PHÂN TRANG (Đã thêm mới) -->
+                <div id="pagination" class="flex items-center justify-center gap-2 mt-8">
+                    <!-- Javascript sẽ render các nút 1, 2, 3... vào đây -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 3. JAVASCRIPT XỬ LÝ API -->
+    <script>
+        const API_BASE_URL = ''; 
+        let currentPage = 1;
+
+        async function loadProducts(page = 1, brand = '', category = '') {
+            currentPage = page;
+            const productGrid = document.getElementById('productGrid');
+            const pagination = document.getElementById('pagination');
+            
+            if (!productGrid) return;
+
+            productGrid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-orange-500 mb-2"></i>
+                    <p class="text-slate-400 text-sm">Đang tải danh sách sản phẩm...</p>
+                </div>
+            `;
+
+            try {
+                let queryParams = new URLSearchParams();
+                queryParams.append('page', page);
+                queryParams.append('size', 6);
+                if (brand) queryParams.append('brand', brand);
+                if (category) queryParams.append('category', category);
+
+                const response = await fetch(`${API_BASE_URL}/products?${queryParams.toString()}`);
+                const result = await response.json();
+
+                let products = [];
+                let totalPages = 0;
+                const pageSize = 6;
+
+                const rawData = result.data || result;
+
+                // Kiểm tra xem Backend có trả về mảng danh sách trực tiếp hay không
+                let allItems = null;
+                if (Array.isArray(rawData)) {
+                    allItems = rawData;
+                } else if (Array.isArray(rawData.content)) {
+                    // Nếu Backend đã phân trang sẵn ở SQL
+                    products = rawData.content;
+                    totalPages = rawData.totalPages;
+                } else if (Array.isArray(rawData.items)) {
+                    products = rawData.items;
+                    totalPages = rawData.totalPages;
+                }
+
+                // Nếu Backend trả về toàn bộ mảng (Chưa phân trang ở SQL) -> Tự cắt mảng ở Frontend
+                if (allItems) {
+                    totalPages = Math.ceil(allItems.length / pageSize);
+                    const startIndex = (page - 1) * pageSize;
+                    products = allItems.slice(startIndex, startIndex + pageSize);
+                }
+
+                if (products && products.length > 0) {
+                    renderProducts(products);
+                    renderPagination(totalPages, page);
+                } else {
+                    productGrid.innerHTML = `
+                        <div class="col-span-full text-center py-12 text-slate-400 bg-slate-900/40 rounded-2xl border border-slate-800">
+                            <i class="fa-solid fa-box-open text-4xl mb-3 text-slate-600"></i>
+                            <p class="font-semibold">Không tìm thấy sản phẩm nào!</p>
+                        </div>
+                    `;
+                    if (pagination) pagination.innerHTML = '';
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            }
+        }
+
+        function renderPagination(totalPages, activePage) {
+            const pagination = document.getElementById('pagination');
+            if (!pagination || totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            // Nút Trang trước
+            html += `
+                <button onclick="changePage(${activePage - 1})" ${activePage === 1 ? 'disabled' : ''} 
+                    class="px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 hover:bg-orange-500 hover:text-slate-950 disabled:opacity-30 disabled:hover:bg-slate-800 disabled:hover:text-slate-300 transition-all">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            `;
+
+            // Các nút số trang (1, 2, 3, 4)
+            for (let i = 1; i <= totalPages; i++) {
+                const isActive = i === activePage;
+                html += `
+                    <button onclick="changePage(${i})" 
+                        class="px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                            isActive 
+                            ? 'bg-orange-500 text-slate-950 shadow-lg shadow-orange-500/20' 
+                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        }">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            // Nút Trang sau
+            html += `
+                <button onclick="changePage(${activePage + 1})" ${activePage >= totalPages ? 'disabled' : ''} 
+                    class="px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 hover:bg-orange-500 hover:text-slate-950 disabled:opacity-30 disabled:hover:bg-slate-800 disabled:hover:text-slate-300 transition-all">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function renderProducts(products) {
+            const productGrid = document.getElementById('productGrid');
+            
+            productGrid.innerHTML = products.map(product => {
+                const brandName = product.brand ? (product.brand.name || product.brand) : 'Sneaker';
+                const categoryName = product.category ? (product.category.name || product.category) : 'Thể thao';
+                const imageUrl = product.imageUrl || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
+
+                return `
+                    <div class="group bg-slate-900/90 rounded-2xl border border-slate-800 p-4 hover:border-orange-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 flex flex-col justify-between">
+                        <div>
+                            <div class="relative w-full aspect-square bg-slate-950/60 rounded-xl overflow-hidden mb-4 flex items-center justify-center p-4">
+                                <span class="absolute top-2 left-2 bg-slate-800/80 backdrop-blur-md text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-700">
+                                    ${categoryName}
+                                </span>
+                                <img src="${imageUrl}" alt="${product.name}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+                            </div>
+                            
+                            <p class="text-xs text-orange-500 font-bold mb-1 uppercase tracking-wider">${brandName}</p>
+                            <h3 class="text-white font-bold text-sm mb-1 line-clamp-1 group-hover:text-orange-400 transition-colors" title="${product.name}">
+                                ${product.name}
+                            </h3>
+                            <p class="text-slate-400 text-xs line-clamp-2 mb-3 h-8">${product.description || 'Chưa có mô tả'}</p>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <span class="text-[10px] text-slate-500 block">Số lượng: ${product.quantity ?? 0}</span>
+                                    <span class="text-base font-black text-white">${Number(product.price || 0).toLocaleString('vi-VN')}đ</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-slate-800 hover:bg-orange-500 text-slate-200 hover:text-slate-950 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cart-plus"></i> Thêm Vào Giỏ
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function changePage(newPage) {
+            const selectedBrand = document.querySelector('input[name="brand"]:checked')?.value || '';
+            const selectedCategory = document.querySelector('input[name="category"]:checked')?.value || '';
+            loadProducts(newPage, selectedBrand, selectedCategory);
+        }
+
+        function filterProducts() {
+            const selectedBrand = document.querySelector('input[name="brand"]:checked')?.value || '';
+            const selectedCategory = document.querySelector('input[name="category"]:checked')?.value || '';
+            loadProducts(1, selectedBrand, selectedCategory);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts(1);
+        });
+    </script>
+</body>
+</html>

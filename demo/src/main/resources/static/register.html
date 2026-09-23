@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - SneakerVault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 font-sans min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-5xl bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- Cột Trái: Banner Thương Hiệu -->
+        <div class="relative p-10 flex flex-col justify-between bg-cover bg-center min-h-[320px] md:min-h-[600px]" 
+             style="background-image: linear-gradient(to bottom, rgba(15,23,42,0.7), rgba(15,23,42,0.9)), url('https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1000&q=80');">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center font-black text-slate-950 text-xl">S</div>
+                    <span class="text-white font-black text-xl tracking-wider">SNEAKER<span class="text-orange-500">VAULT</span></span>
+                </div>
+                <p class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-2">Thành Viên Mới</p>
+                <h1 class="text-3xl lg:text-4xl font-black text-white leading-tight uppercase">Khám phá bộ sưu tập độc quyền</h1>
+            </div>
+            <p class="text-slate-400 text-xs leading-relaxed">Tạo tài khoản ngay hôm nay để nhận nhiều ưu đãi đặc quyền và trải nghiệm dịch vụ mua sắm sneaker hàng đầu.</p>
+        </div>
+
+        <!-- Cột Phải: Form Đăng Ký -->
+        <div class="p-8 lg:p-12 flex flex-col justify-center">
+            <div class="mb-6">
+                <h2 class="text-2xl font-black text-white uppercase tracking-wide">Tạo tài khoản</h2>
+                <p class="text-xs text-slate-400 mt-1">Đăng ký tài khoản SneakerVault của bạn</p>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Họ và tên</label>
+                    <input type="text" id="name" required placeholder="Nguyễn Văn A" 
+                        class="w-full bg-slate-800/80 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Email</label>
+                    <input type="email" id="email" required placeholder="user@example.com" 
+                        class="w-full bg-slate-800/80 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Số điện thoại</label>
+                        <input type="tel" id="phone" required placeholder="0987654321" 
+                            class="w-full bg-slate-800/80 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-orange-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Địa chỉ</label>
+                        <input type="text" id="address" required placeholder="Hà Nội, Việt Nam" 
+                            class="w-full bg-slate-800/80 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-orange-500 transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Mật khẩu</label>
+                    <input type="password" id="password" required placeholder="••••••••" 
+                        class="w-full bg-slate-800/80 text-white text-sm rounded-xl px-4 py-3 border border-slate-700 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+
+                <div id="errorMessage" class="hidden text-xs text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-xl"></div>
+
+                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-slate-950 font-black py-3.5 rounded-xl uppercase text-xs tracking-wider transition-all shadow-lg shadow-orange-500/20 mt-2">
+                    Đăng Ký Tài Khoản
+                </button>
+            </form>
+
+            <p class="text-xs text-center text-slate-400 mt-6">
+                Đã có tài khoản? 
+                <a href="login.html" class="text-orange-500 font-bold hover:underline">Đăng nhập tại đây</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        async function handleRegister(event) {
+            event.preventDefault();
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.classList.add('hidden');
+
+            // Lấy dữ liệu từ Form (không truyền field role)
+            const payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/users/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Đăng ký thành công! Vui lòng đăng nhập.');
+                    window.location.href = 'login.html';
+                } else {
+                    errorDiv.innerText = result.message || 'Đăng ký thất bại, vui lòng kiểm tra lại thông tin!';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorDiv.innerText = 'Lỗi kết nối tới máy chủ!';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

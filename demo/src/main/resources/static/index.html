@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SneakerVault - Nâng Tầm Từng Bước Chân</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Config Tailwind Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316', // Vibrant Orange Accent
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            dark: '#0f172a',
+                            card: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+        /* Custom Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(-2deg); }
+        }
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-orange-500 selection:text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Announcement Bar -->
+    <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white text-xs md:text-sm font-medium py-2 px-4 text-center tracking-wide">
+        🚀 BẢO HÀNH CHÍNH HÃNG 100% • NHẬP MÃ <span class="font-black underline bg-black/20 px-1.5 py-0.5 rounded">SNEAKER10</span> GIẢM NGAY 10%
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 gap-4">
+                
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center font-black text-2xl text-slate-950 transform group-hover:rotate-12 transition-transform shadow-lg shadow-orange-500/30">
+                        S
+                    </div>
+                    <span class="text-2xl font-black tracking-wider uppercase text-white">SNEAKER<span class="text-orange-500">VAULT</span></span>
+                </a>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex items-center space-x-8 font-semibold text-sm">
+                    <a href="#hero" class="text-orange-500 hover:text-orange-400 transition-colors">Trang Chủ</a>
+                    <a href="products.html" class="text-slate-300 hover:text-orange-500 transition-colors">Sản Phẩm</a>
+                    <a href="#promo" class="text-slate-300 hover:text-orange-500 transition-colors">Khuyến Mãi</a>
+                    <a href="#footer" class="text-slate-300 hover:text-orange-500 transition-colors">Liên Hệ</a>
+                </nav>
+
+                <!-- Search & Action Buttons -->
+                <div class="flex items-center space-x-4">
+                    <!-- Search Input Box -->
+                    <div class="relative hidden sm:block w-48 lg:w-64">
+                        <input type="text" id="searchInput" placeholder="Tìm tên giày, hãng..." 
+                            class="w-full bg-slate-800 text-slate-200 text-sm rounded-full pl-10 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-orange-500 transition-all placeholder-slate-500">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    </div>
+
+                    <!-- User Account Modal Toggle -->
+                    <!-- Nút User trên Header -->
+                    <!-- Nút User chuyển hướng tới trang Đăng nhập riêng -->
+                    <a href="login.html" id="userMenuBtn" class="text-slate-300 hover:text-orange-500 transition-colors p-2" title="Đăng nhập / Tài khoản">
+                        <i class="fa-regular fa-user text-xl"></i>
+                    </a>
+
+                    <!-- Cart Toggle Button -->
+                    <button onclick="toggleCartDrawer()" class="relative p-2.5 text-slate-300 hover:text-orange-500 hover:bg-slate-800 rounded-full transition-all" title="Giỏ hàng">
+                        <i class="fa-solid fa-bag-shopping text-lg"></i>
+                        <span id="cartBadge" class="absolute -top-1 -right-1 bg-orange-500 text-slate-950 font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center animate-pulse">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-300 hover:text-white">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Search Dropdown (Mobile Only) -->
+        <div class="p-3 bg-slate-900 border-t border-slate-800 sm:hidden">
+            <div class="relative">
+                <input type="text" id="mobileSearchInput" placeholder="Tìm tên giày..." 
+                    class="w-full bg-slate-800 text-slate-200 text-sm rounded-full pl-10 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-orange-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-6 py-4 space-y-3">
+        <a href="#hero" onclick="toggleMobileMenu()" class="block text-slate-300 hover:text-orange-500 font-medium">Trang Chủ</a>
+        <a href="#products" onclick="toggleMobileMenu()" class="block text-slate-300 hover:text-orange-500 font-medium">Sản Phẩm</a>
+        <a href="#promo" onclick="toggleMobileMenu()" class="block text-slate-300 hover:text-orange-500 font-medium">Khuyến Mãi</a>
+        <a href="#footer" onclick="toggleMobileMenu()" class="block text-slate-300 hover:text-orange-500 font-medium">Liên Hệ</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+        <!-- Ambient Background Glows -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 right-10 w-[300px] h-[300px] bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Content Left -->
+                <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-orange-400 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-fire text-orange-500"></i> Bộ Sưu Tập Mới 2026
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight uppercase leading-none">
+                        Nâng Tầm <br>
+                        <span class="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600 bg-clip-text text-transparent">Từng Bước Chân</span>
+                    </h1>
+                    <p class="text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        Khám phá bộ sưu tập Sneaker độc quyền đỉnh cao về thiết kế & công nghệ êm ái. Tối ưu từng chuyển động của bạn.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#products" class="w-full sm:w-auto px-8 py-4 bg-orange-500 hover:bg-orange-600 text-slate-950 font-bold rounded-2xl transition-all shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 group">
+                            <span>MUA NGAY HÔM NAY</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+
+                    <!-- Trust Stats -->
+                    <div class="pt-8 grid grid-cols-3 gap-4 border-t border-slate-800/80 max-w-md mx-auto lg:mx-0">
+                        <div>
+                            <p class="text-2xl font-black text-white">100%</p>
+                            <p class="text-xs text-slate-400">Chính Hãng</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-black text-white">24H</p>
+                            <p class="text-xs text-slate-400">Giao Tốc Hành</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-black text-white">15K+</p>
+                            <p class="text-xs text-slate-400">Khách Hàng</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Image Slider Right -->
+                <div class="lg:col-span-6 relative flex justify-center items-center">
+                    <div class="relative w-full max-w-lg aspect-square bg-gradient-to-b from-slate-800/50 to-slate-900/80 rounded-3xl border border-slate-800 p-8 flex items-center justify-center shadow-2xl backdrop-blur-sm">
+                        <!-- Hero Shoe Display -->
+                        <img id="heroShoeImg" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80" 
+                            alt="Nike Air Max Special" 
+                            class="w-full object-contain animate-float drop-shadow-[0_20px_30px_rgba(249,115,22,0.3)] transition-all duration-500">
+
+                        <!-- Floating Shoe Badge -->
+                        <div class="absolute bottom-6 left-6 bg-slate-900/90 border border-slate-700 p-3.5 rounded-2xl backdrop-blur-md shadow-xl flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-star text-amber-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400">Sản phẩm Hot nhất</p>
+                                <p id="heroShoeTitle" class="text-sm font-bold text-white">Nike Air Max SuperFly</p>
+                            </div>
+                        </div>
+
+                        <!-- Color Selector Dots -->
+                        <div class="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 bg-slate-900/80 p-2.5 rounded-full border border-slate-700">
+                            <button onclick="changeHeroShoe('red')" class="w-6 h-6 rounded-full bg-red-500 border-2 border-white/80 focus:scale-125 transition-transform" title="Đỏ Flame"></button>
+                            <button onclick="changeHeroShoe('blue')" class="w-6 h-6 rounded-full bg-blue-500 border-2 border-transparent hover:border-white focus:scale-125 transition-transform" title="Xanh Cyber"></button>
+                            <button onclick="changeHeroShoe('green')" class="w-6 h-6 rounded-full bg-emerald-500 border-2 border-transparent hover:border-white focus:scale-125 transition-transform" title="Xanh Neon"></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Promo Section -->
+    <section id="promo" class="py-16 bg-gradient-to-r from-orange-950 via-slate-900 to-amber-950 border-y border-orange-500/20 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4 text-center lg:text-left">
+                    <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-orange-500/30">
+                        Khuyến Mãi Giới Hạn
+                    </span>
+                    <h2 class="text-3xl sm:text-5xl font-black text-white uppercase leading-tight">
+                        Flash Sale Tuần Này <br><span class="text-orange-500">Giảm Đến 40%</span>
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base">
+                        Chương trình ưu đãi cực khủng cho sản phẩm Nike ZoomX Vaporfly Special Edition. Số lượng chỉ còn 15 đôi duy nhất!
+                    </p>
+
+                    <!-- Realtime Countdown Timer -->
+                    <div class="flex justify-center lg:justify-start gap-4 pt-2">
+                        <div class="bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-center min-w-[70px]">
+                            <span id="timerHours" class="block text-2xl sm:text-3xl font-black text-orange-400">08</span>
+                            <span class="text-[10px] text-slate-400 uppercase font-semibold">Giờ</span>
+                        </div>
+                        <div class="bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-center min-w-[70px]">
+                            <span id="timerMinutes" class="block text-2xl sm:text-3xl font-black text-orange-400">42</span>
+                            <span class="text-[10px] text-slate-400 uppercase font-semibold">Phút</span>
+                        </div>
+                        <div class="bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-center min-w-[70px]">
+                            <span id="timerSeconds" class="block text-2xl sm:text-3xl font-black text-orange-400">19</span>
+                            <span class="text-[10px] text-slate-400 uppercase font-semibold">Giây</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <div class="relative max-w-sm">
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=600&q=80" alt="Flash Sale Shoe" class="rounded-2xl shadow-2xl border border-slate-800 rotate-3 hover:rotate-0 transition-transform duration-300">
+                        <div class="absolute -top-4 -right-4 bg-orange-500 text-slate-950 font-black text-lg w-16 h-16 rounded-full flex items-center justify-center shadow-lg -rotate-12">
+                            -40%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer" class="bg-slate-900 border-t border-slate-800 pt-16 pb-8 text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+                
+                <!-- Brand Info -->
+                <div class="lg:col-span-2 space-y-4">
+                    <a href="#" class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center font-black text-slate-950 text-xl">S</div>
+                        <span class="text-xl font-black uppercase text-white tracking-wider">SNEAKER<span class="text-orange-500">VAULT</span></span>
+                    </a>
+                    <p class="text-sm leading-relaxed max-w-sm">
+                        Hệ thống bán lẻ Sneaker & Giày thể thao chính hãng hàng đầu Việt Nam. Cam kết chất lượng, bảo hành tận tâm.
+                    </p>
+                    <div class="flex space-x-3 pt-2">
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-orange-500 hover:text-slate-950 transition-colors flex items-center justify-center"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-orange-500 hover:text-slate-950 transition-colors flex items-center justify-center"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-orange-500 hover:text-slate-950 transition-colors flex items-center justify-center"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">Liên Kết Nhanh</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#hero" class="hover:text-orange-400 transition-colors">Trang chủ</a></li>
+                        <li><a href="#products" class="hover:text-orange-400 transition-colors">Tất cả sản phẩm</a></li>
+                        <li><a href="#promo" class="hover:text-orange-400 transition-colors">Chương trình khuyến mãi</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Bảng đo size giày</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Support -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">Hỗ Trợ Khách Hàng</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Chính sách đổi trả</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Phương thức thanh toán</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Hướng dẫn mua hàng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter Signup -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">Đăng Ký Nhận Tin</h4>
+                    <p class="text-xs mb-3">Nhận ngay Voucher 100K cho đơn hàng đầu tiên.</p>
+                    <form onsubmit="handleSubscribe(event)" class="space-y-2">
+                        <input type="email" required placeholder="Email của bạn..." class="w-full bg-slate-800 text-slate-200 text-xs rounded-xl px-3.5 py-2.5 border border-slate-700 focus:outline-none focus:border-orange-500">
+                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-slate-950 font-bold py-2 rounded-xl text-xs transition-colors">ĐĂNG KÝ NGAY</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>© 2026 SNEAKERVAULT. Tất cả quyền được bảo lưu.</p>
+                <div class="flex space-x-4">
+                    <span>Thanh toán an toàn:</span>
+                    <i class="fa-brands fa-cc-visa text-lg text-slate-400"></i>
+                    <i class="fa-brands fa-cc-mastercard text-lg text-slate-400"></i>
+                    <i class="fa-solid fa-wallet text-lg text-slate-400"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Slide-Over Shopping Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <!-- Backdrop Overlay -->
+        <div onclick="toggleCartDrawer()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+            <div class="w-screen max-w-md bg-slate-900 border-l border-slate-800 text-slate-100 flex flex-col shadow-2xl">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-orange-500"></i> Giỏ Hàng Của Bạn
+                    </h2>
+                    <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Drawer Cart Items Area -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-4" id="cartItemsContainer">
+                    <!-- Dynamic Cart Items -->
+                </div>
+
+                <!-- Drawer Footer (Total & Checkout) -->
+                <div class="p-6 border-t border-slate-800 bg-slate-900/90 space-y-4">
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="Mã giảm giá..." class="flex-1 bg-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:border-orange-500">
+                        <button class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-colors">Áp dụng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('accessToken');
+            const userBtn = document.getElementById('userMenuBtn');
+
+            if (token && userBtn) {
+                // Đổi màu Icon để báo hiệu đã đăng nhập
+                userBtn.classList.add('text-orange-500');
+                
+                // Tùy chọn: Nếu đã đăng nhập, click vào Icon sẽ dẫn tới trang Thông tin cá nhân (Profile)
+                userBtn.setAttribute('href', 'profile.html');
+            }
+        });
+
+        // Dùng trong file login.html
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await res.json();
+
+                if (res.ok && result.data?.accessToken) {
+                    // 1. Lưu token
+                    localStorage.setItem('accessToken', result.data.accessToken);
+                    // 2. Chuyển hướng về trang chủ
+                    window.location.href = 'index.html';
+                } else {
+                    alert(result.message || 'Mật khẩu hoặc tài khoản không đúng');
+                }
+            } catch (err) {
+                console.error('Lỗi kết nối:', err);
+            }
+        }
+    </script>
+
+    <script>
+        const API_BASE_URL = ''; // URL Backend Spring Boot của bạn
+
+        // Hàm gọi API lấy danh sách sản phẩm
+        async function loadProducts(brand = '', category = '') {
+            const productGrid = document.getElementById('productGrid');
+            if (!productGrid) return;
+
+            productGrid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-orange-500 mb-2"></i>
+                    <p class="text-slate-400 text-sm">Đang tải danh sách sản phẩm...</p>
+                </div>
+            `;
+
+            try {
+                let queryParams = new URLSearchParams();
+                if (brand) queryParams.append('brand', brand);
+                if (category) queryParams.append('category', category);
+
+                const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+                
+                const response = await fetch(`${API_BASE_URL}/products${queryString}`);
+                const result = await response.json();
+
+                // SỬA TẠI ĐÂY: Lấy danh sách sản phẩm từ result.data.content
+                const products = result?.data?.content || result?.data || [];
+
+                if (Array.isArray(products) && products.length > 0) {
+                    renderProducts(products);
+                } else {
+                    productGrid.innerHTML = `
+                        <div class="col-span-full text-center py-12 text-slate-400">
+                            <i class="fa-solid fa-box-open text-4xl mb-3 text-slate-600"></i>
+                            <p>Không tìm thấy sản phẩm nào!</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu sản phẩm:', error);
+                productGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-400">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
+                        <p>Lỗi kết nối đến Backend!</p>
+                    </div>
+                `;
+            }
+        }
+
+        
+
+        // Hàm render mảng đối tượng JSON ra các thẻ HTML
+        function renderProducts(products) {
+            const productGrid = document.getElementById('productGrid');
+            
+            productGrid.innerHTML = products.map(product => {
+                // Lấy tên Brand và Category từ object con trong JSON
+                const brandName = product.brand ? product.brand.name : 'Sneaker';
+                const categoryName = product.category ? product.category.name : '';
+                
+                // Ảnh mặc định nếu DTO chưa có trường imageUrl
+                const imageUrl = product.imageUrl || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80';
+
+                return `
+                    <div class="group bg-slate-900/90 rounded-3xl border border-slate-800 p-4 hover:border-orange-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 flex flex-col justify-between">
+                        <div>
+                            <!-- Bọc Ảnh Sản Phẩm -->
+                            <div class="relative w-full aspect-square bg-slate-950/60 rounded-2xl overflow-hidden mb-4 flex items-center justify-center p-4">
+                                <span class="absolute top-3 left-3 bg-slate-800/80 backdrop-blur-md text-slate-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-700">
+                                    ${categoryName}
+                                </span>
+                                <img src="${imageUrl}" 
+                                    alt="${product.name}" 
+                                    class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
+                            </div>
+                            
+                            <!-- Thương Hiệu & Tên -->
+                            <p class="text-xs text-orange-500 font-bold mb-1 uppercase tracking-wider">${brandName}</p>
+                            <h3 class="text-white font-bold text-base mb-2 line-clamp-1 group-hover:text-orange-400 transition-colors" title="${product.name}">
+                                ${product.name}
+                            </h3>
+                            <p class="text-slate-400 text-xs line-clamp-2 mb-4 h-8">${product.description}</p>
+                        </div>
+
+                        <!-- Giá & Nút Thêm Giỏ Hàng -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <span class="text-xs text-slate-500 block">Còn lại: ${product.quantity}</span>
+                                    <span class="text-lg font-black text-white">${Number(product.price).toLocaleString('vi-VN')}đ</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-slate-800 hover:bg-orange-500 text-slate-200 hover:text-slate-950 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cart-plus"></i> Thêm Vào Giỏ
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Tự động tải danh sách sản phẩm khi vừa mở trang
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
