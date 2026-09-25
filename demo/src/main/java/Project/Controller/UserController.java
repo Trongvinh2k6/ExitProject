@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/users/create")
+    @PostMapping("/auth/register")
 	public ResponseEntity<ApiResponse<UserResponseDTO>> createUser(@Valid @RequestBody UserRequestDTO inputUser) {
 		UserResponseDTO userInDB = this.userService.createUser(inputUser);
 		return ApiResponse.created(userInDB);

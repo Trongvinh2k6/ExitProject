@@ -34,7 +34,7 @@ public class UserService {
 		user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
 		user.setPhone(userRequestDTO.getPhone());
 		user.setAddress(userRequestDTO.getAddress());
-		user.setRole(userRequestDTO.getRole());
+		//user.setRole(userRequestDTO.getRole());
 
 		return user;
 
@@ -66,7 +66,7 @@ public class UserService {
 		cart.setUser(user);
 
 		String roleName = "USER";
-        if (userRequestDTO.getEmail() != null && userRequestDTO.getEmail().toLowerCase().contains("admin")) {
+        if (userRequestDTO.getEmail().equals("daotrongvinha1k63tp@gmail.com")) {
             roleName = "ADMIN";
         }
 
@@ -98,7 +98,7 @@ public class UserService {
 		user.setPassword(userRequestDTO.getPassword());
 		user.setPhone(userRequestDTO.getPhone());
 		user.setAddress(userRequestDTO.getAddress());
-		user.setRole(userRequestDTO.getRole());
+		//user.setRole(userRequestDTO.getRole());
 		return convertUserToDTO(this.userRepository.save(user));
 	}
 

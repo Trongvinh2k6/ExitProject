@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ProductController {
     private final ProductService productService;
 

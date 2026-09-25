@@ -28,5 +28,5 @@ public class UserRequestDTO {
     @NotBlank(message = "address không được để trống")
     private String address;
 
-	private Role role;
+	//private Role role;
 }
