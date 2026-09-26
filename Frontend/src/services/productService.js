@@ -15,3 +15,11 @@ export const getProductById = async (id) => {
     const response = await api.get(`/products/${id}`);
     return response.data;
 };
+
+// SỬA Ở ĐÂY: Dùng instance `api` để gọi endpoint `/products/name`
+export const getProductsByName = async (name) => {
+    const response = await api.get(`/products/name`, {
+        params: { name }
+    });
+    return response.data;
+};
