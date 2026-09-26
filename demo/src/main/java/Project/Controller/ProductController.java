@@ -73,6 +73,12 @@ public class ProductController {
         return ApiResponse.success(productResponseDTO);
     }
 
+    @GetMapping("/products/name")
+    public ResponseEntity<ApiResponse<List<ProductResponseDTO>>> getProduct(@RequestParam("name") String product_name) {
+        List<ProductResponseDTO> productResponseDTOs = this.productService.fetchProductByName(product_name);
+        return ApiResponse.success(productResponseDTOs);
+    }
+
     @PutMapping("/products/update/{id}")
     public ResponseEntity<ApiResponse<ProductResponseDTO>> updateProduct(@PathVariable int id, 
         @Valid @RequestBody ProductRequestDTO updateProductRequestDTO) {

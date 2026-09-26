@@ -86,6 +86,16 @@ public class ProductService {
         return convertProductToDTO(product);
     }
 
+    public List<ProductResponseDTO> fetchProductByName(String name) {
+        List<ProductResponseDTO> products = this.productRepository.findByName(name)
+                                                    .stream()
+                                                    .map(product -> {
+                                                        return convertProductToDTO(product);
+                                                    })
+                                                    .collect(Collectors.toList());
+        return products;
+    }
+
     public Page<ProductResponseDTO> fetchProductWithBrandAndCategory(String brand, String category, Pageable pageable) {
         Page<ProductResponseDTO> productResponseDTOs = this.productRepository.findByBrand_nameAndCategory_name(brand, category, pageable)
                                                         .map(product -> {
