@@ -37,6 +37,7 @@ public class ProductService {
         productResponseDTO.setDescription(product.getDescription());
         productResponseDTO.setPrice(product.getPrice());
         productResponseDTO.setQuantity(product.getQuantity());
+        productResponseDTO.setImage(product.getImage());
 
         BrandDTO brandDTO = new BrandDTO(product.getBrand().getId(), 
             product.getBrand().getName(), product.getBrand().getDescription());
@@ -54,6 +55,7 @@ public class ProductService {
         product.setDescription(productRequestDTO.getDescription());
         product.setPrice(productRequestDTO.getPrice());
         product.setQuantity(productRequestDTO.getQuantity());
+        product.setImage(productRequestDTO.getImage());
         Brand brand = this.brandRepository.findById(productRequestDTO.getBrandId())
                             .orElseThrow(() -> new ResourceNotFoundException("Khong co brand"));
 

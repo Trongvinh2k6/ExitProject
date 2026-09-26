@@ -45,6 +45,9 @@ public class Product {
     @Min(value = 1, message = "Quantity phải lớn hơn hoặc bằng 1")
     private Integer quantity;
 
+    @NotBlank(message = "image không được để trống")
+    private String image;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private Brand brand;

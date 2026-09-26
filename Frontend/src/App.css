@@ -309,6 +309,26 @@
     font-weight: bold;
 }
 
+.product-image {
+    width: 100%;
+    height: 250px;
+
+    background: #eee;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
 .view-btn {
     background: #111;
     color: white;
@@ -334,4 +354,263 @@
 
 .error {
     color: red;
+}
+
+/* Container phân trang */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* Nhóm các nút số trang */
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Phong cách chung cho các nút */
+.page-btn, 
+.page-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+}
+
+/* Nút dạng số (vuông hơn một chút) */
+.page-number {
+    width: 40px;
+    padding: 0;
+}
+
+/* Hiệu ứng Hover */
+.page-btn:hover:not(:disabled),
+.page-number:hover:not(.active) {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+/* Trạng thái trang hiện tại (Active) */
+.page-number.active {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Trạng thái bị khóa (Disabled - Trang đầu/cuối) */
+.page-btn:disabled {
+    background-color: #f8fafc;
+    color: #94a3b8;
+    border-color: #f1f5f9;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Container bao ngoài */
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Nút bấm trên Header */
+.user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-menu-trigger:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+/* Vòng tròn Avatar */
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #000000;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info-brief {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.user-email {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.chevron-icon {
+    font-size: 16px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+.chevron-icon.open {
+    transform: rotate(180deg);
+}
+
+/* Menu Dropdown */
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 220px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    z-index: 1000;
+    animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Thẻ Header trong Menu */
+.dropdown-header {
+    padding: 8px 16px;
+}
+
+.header-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+}
+
+.header-email {
+    font-size: 12px;
+    color: #64748b;
+    margin: 2px 0 0 0;
+    word-break: break-all;
+}
+
+/* Đường gạch ngang chia cách */
+.dropdown-divider {
+    height: 1px;
+    background-color: #f1f5f9;
+    margin: 6px 0;
+}
+
+/* Danh sách link */
+.dropdown-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-links a,
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #334155;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    box-sizing: border-box;
+}
+
+.dropdown-links a:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.link-icon {
+    font-size: 16px;
+    color: #64748b;
+}
+
+/* Nút Logout màu đỏ nhẹ */
+.logout-btn {
+    color: #ef4444;
+}
+
+.logout-btn .link-icon {
+    color: #ef4444;
+}
+
+.logout-btn:hover {
+    background-color: #fef2f2;
+}
+
+/* Căn giữa tất cả các thành phần trong nav-right */
+.nav-right {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 16px;          /* Khoảng cách giữa nút Cart và UserMenu */
+}
+
+/* Căn giữa chữ/icon bên trong nút Cart */
+.cart-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
 }

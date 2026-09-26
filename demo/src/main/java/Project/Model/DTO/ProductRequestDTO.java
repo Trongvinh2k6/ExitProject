@@ -34,4 +34,7 @@ public class ProductRequestDTO {
 
     @NotNull(message = "Category không được để trống")
     private Integer categoryId;
+
+    @NotBlank(message = "image không được để trống")
+    private String image;
 }

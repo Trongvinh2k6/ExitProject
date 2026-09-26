@@ -95,7 +95,7 @@ public class UserService {
 				.orElseThrow(() -> new ResourceNotFoundException("user not found with id = " + id));
 		user.setName(userRequestDTO.getName());
 		user.setEmail(userRequestDTO.getEmail());
-		user.setPassword(userRequestDTO.getPassword());
+		//user.setPassword(userRequestDTO.getPassword());
 		user.setPhone(userRequestDTO.getPhone());
 		user.setAddress(userRequestDTO.getAddress());
 		//user.setRole(userRequestDTO.getRole());

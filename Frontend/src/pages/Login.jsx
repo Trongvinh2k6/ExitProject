@@ -53,6 +53,11 @@ const handleSubmit = async (e) => {
       JSON.stringify(user)
     );
 
+    // 3. THÊM DÒNG NÀY: Lưu riêng userId để trang Profile sử dụng
+    if (user && user.id) {
+      localStorage.setItem("userId", user.id);
+    }
+
     console.log("Saved user:", user);
 
     navigate("/");

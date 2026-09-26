@@ -170,40 +170,37 @@ function Products() {
 
 
             {/* PAGINATION */}
-
             <div className="pagination">
-
                 <button
+                    className="page-btn prev-next"
                     disabled={page === 1}
                     onClick={() => setPage(page - 1)}
                 >
-                    Previous
+                    &laquo; Previous
                 </button>
 
-
-                {Array.from(
-                    { length: totalPages },
-                    (_, index) => index + 1
-                ).map(number => (
-
-                    <button
-                        key={number}
-                        onClick={() => setPage(number)}
-                        className={page === number ? "active" : ""}
-                    >
-                        {number}
-                    </button>
-
-                ))}
-
+                <div className="page-numbers">
+                    {Array.from(
+                        { length: totalPages },
+                        (_, index) => index + 1
+                    ).map(number => (
+                        <button
+                            key={number}
+                            onClick={() => setPage(number)}
+                            className={`page-number ${page === number ? "active" : ""}`}
+                        >
+                            {number}
+                        </button>
+                    ))}
+                </div>
 
                 <button
+                    className="page-btn prev-next"
                     disabled={page === totalPages}
                     onClick={() => setPage(page + 1)}
                 >
-                    Next
+                    Next &raquo;
                 </button>
-
             </div>
 
         </div>

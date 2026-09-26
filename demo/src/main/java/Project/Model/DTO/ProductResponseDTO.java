@@ -22,6 +22,8 @@ public class ProductResponseDTO {
 
     private Integer quantity;
 
+    private String image;
+
     private BrandDTO brand;
     
     private CategoryDTO category;

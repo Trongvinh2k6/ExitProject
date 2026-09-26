@@ -21,6 +21,7 @@ import Project.Model.RefreshToken;
 import Project.Model.User;
 import Project.Model.DTO.ExchangeTokenResponse;
 import Project.Model.DTO.LoginResponseDTO;
+import Project.Repository.UserRepository;
 import Project.Service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class JWTService {
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS256;
     private final JwtEncoder jwtEncoder;
+	private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
 
     @Value("${project.jwt.access-token-validity-in-seconds}")
@@ -61,11 +63,17 @@ public class JWTService {
 
         String scope = this.getScope(authentication);
 
+		User user = this.userRepository.findById(userId)
+										.orElseThrow(() -> new ResourceNotFoundException("Khong tim thay user"));
+		
+		String fullname = user.getName();
+
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                                                 .issuedAt(now)
                                                 .expiresAt(validity)
                                                 .subject(authentication.getName())
                                                 .claim("id", userId)
+												.claim("fullname", fullname)
                                                 .claim("scope", scope)
                                                 .build();
         

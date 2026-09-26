@@ -12,6 +12,7 @@ import ProductDetail from "./pages/ProductDetail";
 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Profile from './pages/Profile';
 
 function App() {
 
@@ -46,6 +47,11 @@ function App() {
                 <Route
                     path="/products/:id"
                     element={<ProductDetail />}
+                />
+
+                <Route 
+                    path="/profile" 
+                    element={<Profile />} 
                 />
 
             </Routes>
