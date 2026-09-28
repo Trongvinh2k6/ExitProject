@@ -1,214 +1,188 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { cartService } from '../services/cartService';
 
-function ProductDetail() {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [quantity, setQuantity] = useState(1);
-    const [message, setMessage] = useState("");
+export default function ProductDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8090/products/${id}`);
-                const data = response.data?.data || response.data;
-                setProduct(data);
-            } catch (error) {
-                console.error("Lỗi khi tải chi tiết sản phẩm:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  // Lấy userId từ Auth Context hoặc LocalStorage
+  const userId = 1; 
 
-        fetchProduct();
-    }, [id]);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const [message, setMessage] = useState(null);
 
-    const handleAddToCart = () => {
-        setMessage(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
-        setTimeout(() => setMessage(""), 3000);
+  const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1542291026-7eec264c27ff";
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:8090/products/${id}`);
+        // API trả về dạng ApiResponse { message, data: { ... } }
+        const data = response.data?.data || response.data;
+        setProduct(data);
+      } catch (error) {
+        console.error("Lỗi khi tải chi tiết sản phẩm:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (loading) {
-        return (
-            <div style={{ textAlign: "center", padding: "60px 0", fontSize: "16px", color: "#666" }}>
-                Đang tải thông tin sản phẩm...
-            </div>
-        );
+    if (id) {
+      fetchProduct();
     }
+  }, [id]);
 
-    if (!product) {
-        return (
-            <div style={{ textAlign: "center", padding: "60px 0" }}>
-                <h2>Không tìm thấy sản phẩm!</h2>
-                <button 
-                    onClick={() => navigate("/products")}
-                    style={{ marginTop: "12px", padding: "8px 16px", cursor: "pointer" }}
-                >
-                    Quay lại danh sách sản phẩm
-                </button>
-            </div>
-        );
+  const handleQuantityChange = (type) => {
+    if (type === 'decrease' && quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    } else if (type === 'increase' && quantity < (product?.quantity || 99)) {
+      setQuantity((prev) => prev + 1);
     }
+  };
 
-    // Giá trị fallback hiển thị dữ liệu
-    const imageUrl = product.imageUrl || product.image || "https://via.placeholder.com/500x500?text=Product+Image";
-    const formattedPrice = product.price 
-        ? new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(product.price)
-        : "0 ₫";
+  const handleAddToCart = async () => {
+    if (!product) return;
 
-    // Xử lý lấy tên danh mục an toàn kể cả khi category là Object
-    const categoryName = typeof product.category === 'object' && product.category !== null
-        ? product.category.name 
-        : (product.category || product.brand || "Skateboard");
+    const targetProductId = product.id || id;
 
+    console.log("userId:", userId);
+    console.log("productId:", targetProductId);
+    console.log("quantity:", quantity);
+
+    try {
+      setAdding(true);
+      setMessage(null);
+
+      // Gọi cartService thêm vào giỏ hàng
+      await cartService.addToCart(userId, targetProductId, quantity);
+
+      setMessage({ type: 'success', text: 'Đã thêm sản phẩm vào giỏ hàng!' });
+    } catch (error) {
+      console.error('Lỗi thêm sản phẩm:', error);
+      console.log("STATUS:", error.response?.status);
+      console.log("DATA:", error.response?.data);
+      console.log("REQUEST:", error.config?.data);
+      setMessage({ type: 'error', text: 'Thêm vào giỏ hàng thất bại. Vui lòng thử lại!' });
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center py-20 font-medium">Đang tải thông tin sản phẩm...</div>;
+  }
+
+  if (!product) {
     return (
-        <div style={{ maxWidth: "1100px", margin: "40px auto", padding: "0 20px", fontFamily: "sans-serif" }}>
-            {/* Nút Quay lại */}
-            <button
-                onClick={() => navigate(-1)}
-                style={{
-                    background: "none",
-                    border: "none",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    color: "#555",
-                    marginBottom: "24px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px"
-                }}
-            >
-                ← Quay lại
-            </button>
-
-            {/* Thông báo thêm giỏ hàng */}
-            {message && (
-                <div style={{
-                    padding: "12px 20px",
-                    backgroundColor: "#d4edda",
-                    color: "#155724",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                    fontWeight: "500"
-                }}>
-                    {message}
-                </div>
-            )}
-
-            {/* Khối giao diện chính (Grid 2 cột) */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start" }}>
-                
-                {/* Cột trái: Hình ảnh */}
-                <div style={{
-                    backgroundColor: "#f8fafc",
-                    borderRadius: "16px",
-                    padding: "20px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "1px solid #e2e8f0",
-                    minHeight: "400px"
-                }}>
-                    <img
-                        src={imageUrl}
-                        alt={product.name || "Product"}
-                        style={{
-                            maxWidth: "100%",
-                            maxHeight: "450px",
-                            objectFit: "contain",
-                            borderRadius: "8px"
-                        }}
-                    />
-                </div>
-
-                {/* Cột phải: Thông tin chi tiết */}
-                <div>
-                    {/* Danh mục / Thương hiệu */}
-                    <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-                        <span style={{
-                            fontSize: "12px",
-                            fontWeight: "700",
-                            textTransform: "uppercase",
-                            backgroundColor: "#f1f5f9",
-                            padding: "4px 10px",
-                            borderRadius: "20px",
-                            color: "#475569"
-                        }}>
-                            {categoryName}
-                        </span>
-                    </div>
-
-                    {/* Tên sản phẩm */}
-                    <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#0f172a", margin: "0 0 12px 0" }}>
-                        {product.name}
-                    </h1>
-
-                    {/* Giá tiền */}
-                    <div style={{ fontSize: "24px", fontWeight: "700", color: "#2563eb", marginBottom: "16px" }}>
-                        {formattedPrice}
-                    </div>
-
-                    {/* Mô tả sản phẩm */}
-                    <p style={{ color: "#64748b", lineHeight: "1.6", fontSize: "15px", marginBottom: "24px" }}>
-                        {product.description || "Chưa có mô tả cho sản phẩm này."}
-                    </p>
-
-                    <hr style={{ border: "none", borderTop: "1px solid #e2e8f0", margin: "24px 0" }} />
-
-                    {/* Trạng thái tồn kho */}
-                    <div style={{ marginBottom: "20px", fontSize: "14px", color: "#334155" }}>
-                        <strong>Tình trạng: </strong>
-                        <span style={{ color: (product.stock ?? 20) > 0 ? "#16a34a" : "#dc2626", fontWeight: "600" }}>
-                            {(product.stock ?? 20) > 0 ? `Còn hàng (${product.stock ?? 20} sản phẩm)` : "Hết hàng"}
-                        </span>
-                    </div>
-
-                    {/* Bộ chọn số lượng */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-                        <label style={{ fontWeight: "600", fontSize: "14px", color: "#334155" }}>Số lượng:</label>
-                        <div style={{ display: "flex", alignItems: "center", border: "1px solid #cbd5e1", borderRadius: "6px" }}>
-                            <button
-                                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                                style={{ padding: "6px 14px", background: "none", border: "none", cursor: "pointer", fontSize: "16px" }}
-                            >
-                                -
-                            </button>
-                            <span style={{ padding: "6px 12px", fontWeight: "600", fontSize: "14px" }}>{quantity}</span>
-                            <button
-                                onClick={() => setQuantity(prev => prev + 1)}
-                                style={{ padding: "6px 14px", background: "none", border: "none", cursor: "pointer", fontSize: "16px" }}
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Nút Thêm vào giỏ hàng */}
-                    <button
-                        onClick={handleAddToCart}
-                        style={{
-                            width: "100%",
-                            padding: "14px 24px",
-                            backgroundColor: "#000",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "8px",
-                            fontSize: "16px",
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            transition: "background-color 0.2s"
-                        }}
-                    >
-                        Thêm Vào Giỏ Hàng
-                    </button>
-                </div>
-            </div>
-        </div>
+      <div className="text-center py-20">
+        <p className="text-red-500 font-medium mb-4">Không tìm thấy sản phẩm!</p>
+        <button onClick={() => navigate('/products')} className="underline">Quay lại danh sách</button>
+      </div>
     );
-}
+  }
 
-export default ProductDetail;
+  const imageUrl = product.image || product.imageUrl || DEFAULT_IMAGE;
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <button 
+        onClick={() => navigate(-1)} 
+        className="text-gray-500 hover:text-black mb-6 inline-flex items-center gap-1 text-sm font-medium"
+      >
+        ← Quay lại
+      </button>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="bg-gray-100 rounded-2xl p-8 flex items-center justify-center min-h-[350px]">
+          <img 
+            src={imageUrl} 
+            alt={product.name} 
+            className="w-full h-auto object-contain max-h-[400px]"
+            onError={(e) => {
+              e.target.src = DEFAULT_IMAGE;
+            }}
+          />
+        </div>
+
+        <div className="space-y-6">
+          <span className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+            {product.category?.name || 'SPORT'}
+          </span>
+
+          <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+
+          <p className="text-2xl font-bold text-blue-600">
+            {product.price?.toLocaleString('vi-VN')} ₫
+          </p>
+
+          <p className="text-gray-500 text-sm leading-relaxed">
+            {product.description || 'Chưa có mô tả cho sản phẩm này.'}
+          </p>
+
+          <hr className="border-gray-200" />
+
+          {/* Tình trạng kho - Đã sửa chính xác thuộc tính product.quantity */}
+          <p className="text-sm">
+            Tình trạng:{' '}
+            {product.quantity > 0 ? (
+              <span className="text-green-600 font-semibold">
+                Còn hàng ({product.quantity} sản phẩm)
+              </span>
+            ) : (
+              <span className="text-red-600 font-semibold">
+                Hết hàng
+              </span>
+            )}
+          </p>
+
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium">Số lượng:</span>
+            <div className="flex items-center border rounded-md">
+              <button
+                onClick={() => handleQuantityChange('decrease')}
+                className="px-3 py-1 hover:bg-gray-100 text-gray-600 font-medium"
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <span className="px-4 py-1 font-semibold text-sm">{quantity}</span>
+              <button
+                onClick={() => handleQuantityChange('increase')}
+                className="px-3 py-1 hover:bg-gray-100 text-gray-600 font-medium"
+                disabled={quantity >= product.quantity}
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={adding || product.quantity <= 0}
+            className="w-full bg-black text-white py-3.5 rounded-lg font-bold hover:bg-gray-800 transition duration-200 disabled:opacity-50"
+          >
+            {adding ? 'Đang thêm...' : product.quantity <= 0 ? 'Sản phẩm đã hết hàng' : 'Thêm Vào Giỏ Hàng'}
+          </button>
+
+          {message && (
+            <div
+              className={`p-3 rounded-md text-sm text-center ${
+                message.type === 'success'
+                  ? 'bg-green-50 text-green-700 border border-green-200'
+                  : 'bg-red-50 text-red-700 border border-red-200'
+              }`}
+            >
+              {message.text}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

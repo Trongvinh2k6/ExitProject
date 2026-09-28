@@ -66,32 +66,72 @@ public class CartService {
                                 .build();
     }
 
-    public CartResponseDTO AddACartitemToCart(CartItemRequestDTO cartItemRequestDTO, int userId) {
-        User user = this.userRepository.findById(userId)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay user"));
-        
-        Product product = this.productRepository.findById(cartItemRequestDTO.getProduct_Id())
-                                    .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay product"));
+    public CartResponseDTO AddACartitemToCart(
+        CartItemRequestDTO cartItemRequestDTO,
+        int userId
+    ) {
 
-        if (product.getQuantity() <= 0) {
-            throw new ResourceNotFoundException("San pham da het hang");
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Khong tim thay user")
+                );
+
+        Product product = this.productRepository
+                .findById(cartItemRequestDTO.getProductId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Khong tim thay product")
+                );
+
+        int quantity = cartItemRequestDTO.getQuantity();
+
+        // Kiểm tra số lượng
+        if (quantity <= 0) {
+            throw new IllegalArgumentException(
+                    "So luong phai lon hon 0"
+            );
         }
-        product.setQuantity(product.getQuantity() - 1);
+
+        // Kiểm tra tồn kho
+        if (product.getQuantity() < quantity) {
+            throw new IllegalArgumentException(
+                    "Khong du so luong san pham trong kho"
+            );
+        }
+
         Cart cart = user.getCart();
+
         boolean ok = false;
-        for(CartItem cartItem : cart.getItems()) {
-            if(cartItem.getProduct().getId().equals(product.getId())) {
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
-                cartItem.setPrice(product.getPrice() * cartItem.getQuantity());
+
+        for (CartItem cartItem : cart.getItems()) {
+
+            if (cartItem.getProduct().getId()
+                    .equals(product.getId())) {
+
+                // Sản phẩm đã có trong giỏ
+                int newQuantity =
+                        cartItem.getQuantity() + quantity;
+
+                cartItem.setQuantity(newQuantity);
+
+                cartItem.setPrice(
+                        product.getPrice() * newQuantity
+                );
+
+                this.cartItemRepository.save(cartItem);
+
                 ok = true;
                 break;
             }
         }
-        if(ok == false) {
+
+        // Sản phẩm chưa có trong giỏ
+        if (!ok) {
+
             CartItem cartItem = new CartItem();
+
             cartItem.setProduct(product);
-            cartItem.setQuantity(1);
-            cartItem.setPrice(cartItemRequestDTO.getPrice());
+            cartItem.setQuantity(quantity);
+            cartItem.setPrice(product.getPrice() * quantity);
             cartItem.setCart(cart);
 
             this.cartItemRepository.save(cartItem);
@@ -99,8 +139,17 @@ public class CartService {
             cart.getItems().add(cartItem);
         }
 
+        // Trừ số lượng trong kho
+        product.setQuantity(
+                product.getQuantity() - quantity
+        );
+
         this.productRepository.save(product);
-        return convertCartToDTO(this.cartRepository.save(cart));
+
+        // Lưu Cart
+        this.cartRepository.save(cart);
+
+        return convertCartToDTO(cart);
     }
 
     public CartResponseDTO fetchCartResponseDTO(int userId) {
