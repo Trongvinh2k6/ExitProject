@@ -152,6 +152,45 @@ public class CartService {
         return convertCartToDTO(cart);
     }
 
+    public CartResponseDTO updateCartItemQuantity(int userId, int productId, int newQuantity) {
+        if (newQuantity <= 0) {
+            throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
+        }
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
+
+        Cart cart = user.getCart();
+        if (cart == null) {
+            throw new ResourceNotFoundException("User không có giỏ hàng");
+        }
+
+        Product product = this.productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy product"));
+
+        if (product.getQuantity() < newQuantity) {
+            throw new IllegalArgumentException("Số lượng tồn kho không đủ");
+        }
+
+        boolean updated = false;
+        for (CartItem cartItem : cart.getItems()) {
+            if (cartItem.getProduct().getId().equals(productId)) {
+                cartItem.setQuantity(newQuantity);
+                cartItem.setPrice(product.getPrice() * newQuantity);
+                this.cartItemRepository.save(cartItem);
+                updated = true;
+                break;
+            }
+        }
+
+        if (!updated) {
+            throw new ResourceNotFoundException("Không tìm thấy sản phẩm trong giỏ hàng");
+        }
+
+        this.cartRepository.save(cart);
+        return convertCartToDTO(cart);
+    }
+
     public CartResponseDTO fetchCartResponseDTO(int userId) {
         User user = this.userRepository.findById(userId)
                                     .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay user"));
@@ -174,6 +213,13 @@ public class CartService {
         if (cart == null) {
             throw new ResourceNotFoundException("User khong co cart");
         }
+
+        CartItem cartItem = this.cartItemRepository.findById(cartItemId)
+                                                    .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay don hang"));
+        
+        Product product = cartItem.getProduct();
+        product.setQuantity(product.getQuantity() + cartItem.getQuantity());
+        this.productRepository.save(product);
 
         boolean removed = cart.getItems()
                 .removeIf(item -> item.getId().equals(cartItemId));

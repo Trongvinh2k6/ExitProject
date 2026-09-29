@@ -26,15 +26,10 @@ export const cartService = {
     return response.data;
   },
 
-  // Update Cart Item Quantity
-  updateCartItem: async (userId, productId, quantity) => {
-    const payload = {
-      productId: Number(productId),
-      quantity: Number(quantity)
-    };
-    const response = await api.post(
-      `/users/${userId}/cart/items`,
-      payload
+  // SỬA LẠI: Gọi API PUT để cập nhật số lượng thay vì POST
+  updateCartItem: async (userId, productId, newQuantity) => {
+    const response = await api.put(
+      `/users/${userId}/cart/items/${productId}?newQuantity=${newQuantity}`
     );
     return response.data;
   }

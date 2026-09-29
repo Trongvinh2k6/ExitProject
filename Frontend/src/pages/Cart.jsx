@@ -90,26 +90,21 @@ export default function Cart() {
     fetchCart();
   }, []);
 
-  const handleUpdateQuantity = async (cartItemId, productId, newQuantity) => {
+ const handleUpdateQuantity = async (cartItemId, productId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
       setUpdatingItemId(cartItemId);
-      await cartService.updateCartItem(userId, productId, newQuantity);
-      
-      setCart((prev) => ({
-        ...prev,
-        items: prev.items.map((item) => {
-          if (item.id === cartItemId) {
-            const unitPrice = item.productResponseDTO?.price || 0;
-            return {
-              ...item,
-              quantity: newQuantity,
-              price: unitPrice * newQuantity,
-            };
-          }
-          return item;
-        }),
-      }));
+
+      // 1. Gọi API cập nhật số lượng
+      const response = await cartService.updateCartItem(userId, productId, newQuantity);
+
+      // 2. Lấy dữ liệu CartResponseDTO từ response của Backend
+      const updatedCart = response?.data || response;
+
+      // 3. Cập nhật thẳng state cart bằng dữ liệu chuẩn từ server
+      if (updatedCart) {
+        setCart(updatedCart);
+      }
     } catch (error) {
       console.error("Cập nhật số lượng thất bại:", error);
     } finally {
