@@ -55,7 +55,7 @@ function App() {
                     element={<Profile />} 
                 />
 
-                <Route 
+                <Route  
                     path="/cart" 
                     element={<Cart />} 
                 />

@@ -8,7 +8,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
 
   // Lấy userId từ Auth Context hoặc LocalStorage
-  const userId = 1; 
+  const userId = localStorage.getItem('userId');
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -73,6 +73,7 @@ export default function ProductDetail() {
       setAdding(false);
     }
   };
+  
 
   if (loading) {
     return <div className="text-center py-20 font-medium">Đang tải thông tin sản phẩm...</div>;
