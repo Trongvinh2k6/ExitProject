@@ -175,6 +175,13 @@ public class CartService {
         boolean updated = false;
         for (CartItem cartItem : cart.getItems()) {
             if (cartItem.getProduct().getId().equals(productId)) {
+                int oldQuanity = cartItem.getQuantity();
+                int difference = newQuantity - oldQuanity;
+                if (difference > 0 && product.getQuantity() < difference) {
+                    throw new IllegalArgumentException("Số lượng tồn kho không đủ");
+                }
+                product.setQuantity(product.getQuantity() - difference);
+                this.productRepository.save(product);
                 cartItem.setQuantity(newQuantity);
                 cartItem.setPrice(product.getPrice() * newQuantity);
                 this.cartItemRepository.save(cartItem);
