@@ -176,7 +176,7 @@ public class OrderService {
             // Thêm vào List mà Hibernate đang quản lý
             order.getOrderItems().add(orderItem);
 
-            totalPrice += product.getPrice() * product.getQuantity();
+            totalPrice += product.getPrice() * itemRequest.getQuantity();
         }
 
         order.setTotalPrice(totalPrice);

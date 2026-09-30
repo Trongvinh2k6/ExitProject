@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import UserMenu from "./UserMenu";
@@ -10,13 +11,10 @@ function Navbar() {
 
     if (accessToken) {
         try {
-            // 解碼 Token
             const decoded = jwtDecode(accessToken);
-            
             user = {
                 id: decoded.id,
                 email: decoded.sub,
-                // Lấy claim fullname từ token bạn đã cấu hình ở Spring Boot
                 fullname: decoded.fullname 
             };
         } catch (error) {
@@ -28,6 +26,7 @@ function Navbar() {
     const handleLogout = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
+        localStorage.removeItem("userId");
         navigate("/login");
     };
 
@@ -41,6 +40,8 @@ function Navbar() {
                 <div className="nav-links">
                     <Link to="/">Home</Link>
                     <Link to="/products">Products</Link>
+                    {/* Thêm link Orders ở đây nếu người dùng đã đăng nhập */}
+                    {accessToken && <Link to="/orders">My Orders</Link>}
                 </div>
 
                 <div className="nav-right">
@@ -49,7 +50,6 @@ function Navbar() {
                     </Link>
 
                     {accessToken ? (
-                        /* Đảm bảo truyền biến user đã được decode ở trên vào đây */
                         <UserMenu user={user} onLogout={handleLogout} />
                     ) : (
                         <div className="auth-buttons">
