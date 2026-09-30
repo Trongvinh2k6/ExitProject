@@ -31,7 +31,7 @@ function Register() {
 
     try {
       await register(formData);
-      navigate("/login");
+      navigate("/auth/login");
     } catch (err) {
       console.error(err);
       setError(
@@ -150,7 +150,7 @@ function Register() {
             <button
               type="button"
               className="switch-btn"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/auth/login")}
             >
               Đăng nhập ngay
             </button>

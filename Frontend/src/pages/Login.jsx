@@ -192,7 +192,7 @@ const handleSubmit = async (e) => {
             <button
               type="button"
               className="switch-btn"
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/auth/register")}
             >
               Tạo tài khoản mới
             </button>

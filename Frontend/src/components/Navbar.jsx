@@ -27,7 +27,7 @@ function Navbar() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         localStorage.removeItem("userId");
-        navigate("/login");
+        navigate("/auth/login");
     };
 
     return (
@@ -53,10 +53,10 @@ function Navbar() {
                         <UserMenu user={user} onLogout={handleLogout} />
                     ) : (
                         <div className="auth-buttons">
-                            <Link to="/login" className="login-btn">
+                            <Link to="/auth/login" className="login-btn">
                                 Login
                             </Link>
-                            <Link to="/register" className="register-btn">
+                            <Link to="/auth/register" className="register-btn">
                                 Register
                             </Link>
                         </div>

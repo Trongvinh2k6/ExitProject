@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-import { getProducts, getProductsByName } from "../services/productService"; // Thêm API getProductsByName nếu có
+import { getProducts, getProductsByName } from "../services/productService";
 
 function Products() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // 1. Lấy giá trị ban đầu từ URL Params
+    const initialBrand = searchParams.get("brand") || "";
+    const initialCategory = searchParams.get("category") || "";
+    const initialSearch = searchParams.get("search") || "";
+    const initialPage = Number(searchParams.get("page")) || 1;
+
     const [products, setProducts] = useState([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(initialPage);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // State cho bộ lọc & tìm kiếm
-    const [selectedBrand, setSelectedBrand] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [searchTerm, setSearchTerm] = useState(""); // 1. Thêm State lưu từ khóa search
+    // State bộ lọc & tìm kiếm
+    const [selectedBrand, setSelectedBrand] = useState(initialBrand);
+    const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+    const [searchTerm, setSearchTerm] = useState(initialSearch);
 
+    // 2. Cập nhật query parameters trên thanh URL mỗi khi state thay đổi
+    useEffect(() => {
+        const params = {};
+        if (selectedBrand) params.brand = selectedBrand;
+        if (selectedCategory) params.category = selectedCategory;
+        if (searchTerm.trim()) params.search = searchTerm.trim();
+        if (page > 1) params.page = page;
+
+        setSearchParams(params, { replace: true });
+    }, [selectedBrand, selectedCategory, searchTerm, page, setSearchParams]);
+
+    // 3. Fetch dữ liệu dựa theo bộ lọc
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -33,12 +54,10 @@ function Products() {
             } catch (error) {
                 console.error(error);
                 
-                // Xử lý riêng: Nếu backend trả về 404 Not Found khi search -> Coi như không tìm thấy SP
                 if (error.response && error.response.status === 404) {
                     setProducts([]);
-                    setError(""); // Bỏ thông báo lỗi màu đỏ
+                    setError(""); 
                 } else {
-                    // Các lỗi kết nối/server khác mới hiện thông báo đỏ
                     setProducts([]);
                     setError("Không thể tải danh sách sản phẩm");
                 }
@@ -50,10 +69,10 @@ function Products() {
         fetchProducts();
     }, [page, selectedBrand, selectedCategory, searchTerm]);
 
-    // Hàm xử lý khi người dùng gõ vào ô Search
+    // Hàm xử lý gõ vào ô Search
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
-        setPage(1); // Reset về trang 1 khi tìm kiếm
+        setPage(1); // Reset về trang 1
     };
 
     // Hàm xử lý chọn/bỏ chọn Brand
@@ -79,7 +98,7 @@ function Products() {
                     <h1>All Shoes</h1>
                 </div>
 
-                {/* 4. Ô TÌM KIẾM ĐẶT BÊN TRONG HEADER (VỊ TRÍ KHOANH TRÒN) */}
+                {/* Ô TÌM KIẾM */}
                 <div className="search-box" style={{ flex: 1, maxWidth: '400px', margin: '0 20px' }}>
                     <input
                         type="text"
@@ -150,7 +169,7 @@ function Products() {
                 </main>
             </div>
 
-            {/* PAGINATION - Ẩn khi đang tìm kiếm bằng tên */}
+            {/* PAGINATION */}
             {searchTerm.trim() === "" && (
                 <div className="pagination">
                     <button

@@ -38,12 +38,12 @@ function App() {
                 />
 
                 <Route 
-                    path="/register" 
+                    path="/auth/register" 
                     element={<Register />} 
                 />
 
                 <Route 
-                    path="/login" 
+                    path="/auth/login" 
                     element={<Login />} 
                 />
 
