@@ -2,6 +2,7 @@ package Project.Controller;
 
 import java.util.List;
 
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import Project.Model.Role;
 import Project.Model.DTO.ProductRequestDTO;
 import Project.Model.DTO.ProductResponseDTO;
 import Project.Model.DTO.RoleResponseDTO;
+import Project.Model.DTO.ProductWebSocketEvent;
 import Project.Service.ProductService;
 import Project.Service.RoleService;
 import jakarta.validation.Valid;
@@ -37,7 +39,18 @@ public class ProductController {
     @PostMapping("/products/create")
     public ResponseEntity<ApiResponse<ProductResponseDTO>> postProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
         ProductResponseDTO productResponseDTO = this.productService.createProduct(productRequestDTO);
-        messagingTemplate.convertAndSend("/topic/products", productResponseDTO);
+        
+        ProductWebSocketEvent event =
+            new ProductWebSocketEvent(
+                    "CREATE",
+                    productResponseDTO
+            );
+        
+        messagingTemplate.convertAndSend(
+                "/topic/products",
+                event
+        );
+        
         return ApiResponse.created(productResponseDTO);
     }
 
@@ -86,12 +99,32 @@ public class ProductController {
     public ResponseEntity<ApiResponse<ProductResponseDTO>> updateProduct(@PathVariable int id, 
         @Valid @RequestBody ProductRequestDTO updateProductRequestDTO) {
         ProductResponseDTO productResponseDTO = this.productService.updateProductById(id, updateProductRequestDTO);
+        ProductWebSocketEvent event =
+            new ProductWebSocketEvent(
+                    "UPDATE",
+                    productResponseDTO
+            );
+
+        messagingTemplate.convertAndSend(
+                "/topic/products",
+                event
+        );
         return ApiResponse.success(productResponseDTO);
     }
 
     @DeleteMapping("/products/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable int id) {
         this.productService.deleteProductById(id);
+        ProductWebSocketEvent event =
+            new ProductWebSocketEvent(
+                    "DELETE",
+                    id
+            );
+
+        messagingTemplate.convertAndSend(
+                "/topic/products",
+                event
+        );
         return ApiResponse.success("delete successful");
     }
 }
