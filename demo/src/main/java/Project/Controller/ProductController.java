@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,10 +32,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/products/create")
     public ResponseEntity<ApiResponse<ProductResponseDTO>> postProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
         ProductResponseDTO productResponseDTO = this.productService.createProduct(productRequestDTO);
+        messagingTemplate.convertAndSend("/topic/products", productResponseDTO);
         return ApiResponse.created(productResponseDTO);
     }
 

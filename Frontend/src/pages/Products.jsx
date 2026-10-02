@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { getProducts, getProductsByName } from "../services/productService";
+import { Client } from "@stomp/stompjs";
 
 function Products() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +23,7 @@ function Products() {
     const [selectedBrand, setSelectedBrand] = useState(initialBrand);
     const [selectedCategory, setSelectedCategory] = useState(initialCategory);
     const [searchTerm, setSearchTerm] = useState(initialSearch);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // 2. Cập nhật query parameters trên thanh URL mỗi khi state thay đổi
     useEffect(() => {
@@ -68,6 +70,46 @@ function Products() {
 
         fetchProducts();
     }, [page, selectedBrand, selectedCategory, searchTerm]);
+
+    // 4. WebSocket
+    useEffect(() => {
+        const client = new Client({
+            brokerURL: "ws://localhost:8090/ws",
+
+            onConnect: () => {
+                console.log("WebSocket connected");
+
+                client.subscribe("/topic/products", (message) => {
+
+                    const newProduct = JSON.parse(message.body);
+
+                    console.log(
+                        "New product received:",
+                        newProduct
+                    );
+
+                    // Không tự thêm product vào products.
+                    // Chỉ yêu cầu fetch lại API.
+                    setRefreshTrigger(prev => prev + 1);
+                });
+            },
+
+            onStompError: (frame) => {
+                console.error("STOMP error:", frame);
+            },
+
+            onWebSocketError: (error) => {
+                console.error("WebSocket error:", error);
+            }
+        });
+
+        client.activate();
+
+        return () => {
+            client.deactivate();
+        };
+    }, []);
+
 
     // Hàm xử lý gõ vào ô Search
     const handleSearchChange = (e) => {

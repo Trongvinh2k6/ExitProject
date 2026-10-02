@@ -60,8 +60,7 @@ public class SecurityConfig {
 
     @Bean 
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-            .anyRequest().permitAll()
+        http.authorizeHttpRequests(request -> request.anyRequest().permitAll()
         );
 
         http.oauth2ResourceServer(oath2 -> oath2
