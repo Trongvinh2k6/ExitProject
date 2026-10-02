@@ -14,5 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class CreateOrderItemDTO {
+    private int userId;
+    
     private List<OrderItemRequestDTO> items;
 }

@@ -11,13 +11,14 @@ import Project.Helper.exception.ResourceNotFoundException;
 import Project.Model.Order;
 import Project.Model.OrderItem;
 import Project.Model.Product;
+import Project.Model.User;
 import Project.Model.DTO.CreateOrderItemDTO;
 import Project.Model.DTO.OrderItemRequestDTO;
 import Project.Model.DTO.OrderItemResponseDTO;
 import Project.Model.DTO.OrderResponseDTO;
 import Project.Repository.OrderRepository;
 import Project.Repository.ProductRepository;
-
+import Project.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
     public OrderItemResponseDTO convertOrderItemToDTO(OrderItem orderItem) {
@@ -88,6 +90,10 @@ public class OrderService {
         order.setTotalPrice(totalPrice);
         order.setOrderItems(orderItems);
 
+        User user = this.userRepository.findById(request.getUserId())
+                                        .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay user"));
+
+        order.setUser(user);
         return convertOrderToDTO(
                 this.orderRepository.save(order)
         );
@@ -184,5 +190,12 @@ public class OrderService {
         return convertOrderToDTO(
                 this.orderRepository.save(order)
         );
+    }
+
+    public int getUserIdByOrderId(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Khong tim duoc order"));
+
+        return order.getUser().getId();
     }
 }

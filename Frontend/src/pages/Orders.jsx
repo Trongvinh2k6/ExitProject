@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { orderService } from '../services/orderService';
+import { Client } from "@stomp/stompjs";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -20,7 +21,75 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    fetchOrders();
+
+    // 1. Lấy danh sách Order ban đầu
+      fetchOrders();
+
+      // 2. Tạo WebSocket client
+      const client = new Client({
+          brokerURL: "ws://localhost:8090/ws",
+
+          onConnect: () => {
+
+              console.log("WebSocket connected");
+
+              // 3. Lấy user hiện tại
+              const user = JSON.parse(
+                  localStorage.getItem("user")
+              );
+
+              const userId = user?.id;
+
+              console.log("Subscribe user:", userId);
+
+              // 4. Subscribe topic riêng của user
+              client.subscribe(
+                  `/topic/orders/user/${userId}`,
+                  (message) => {
+
+                      const updatedOrder =
+                          JSON.parse(message.body);
+
+                      console.log(
+                          "Order updated:",
+                          updatedOrder
+                      );
+
+                      // 5. Cập nhật Order trong state
+                      setOrders(prevOrders =>
+                          prevOrders.map(order =>
+                              order.id === updatedOrder.id
+                                  ? updatedOrder
+                                  : order
+                          )
+                      );
+                  }
+              );
+          },
+
+          onStompError: (frame) => {
+              console.error(
+                  "STOMP error:",
+                  frame
+              );
+          },
+
+          onWebSocketError: (error) => {
+              console.error(
+                  "WebSocket error:",
+                  error
+              );
+          }
+      });
+
+      // 6. Kết nối
+      client.activate();
+
+      // 7. Cleanup khi rời trang
+      return () => {
+          client.deactivate();
+      };
+
   }, []);
 
   const handleCancelOrder = async (orderId) => {

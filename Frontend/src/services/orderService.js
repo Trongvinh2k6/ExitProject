@@ -2,9 +2,8 @@ import api from './api';
 
 export const orderService = {
   // POST /orders/create
-  createOrder: async (items) => {
-    // payload: { items: [ { product_Id: 1, quantity: 2 } ] }
-    const response = await api.post('/orders/create', { items });
+  createOrder: async (orderData) => {
+    const response = await api.post('/orders/create', orderData);
     return response.data;
   },
 

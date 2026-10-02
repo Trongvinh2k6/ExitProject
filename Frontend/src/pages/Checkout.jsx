@@ -41,25 +41,26 @@ export default function Checkout() {
     try {
       setSubmitting(true);
 
-      // 1. Chuẩn bị danh sách items đúng định dạng CreateOrderItemDTO
       const itemsPayload = cart.items.map((item) => {
         const productId = item.productResponseDTO?.id || item.productId;
+
         return {
           product_Id: Number(productId),
           quantity: Number(item.quantity)
         };
       });
 
-      // 2. Gọi API tạo đơn hàng
-      await orderService.createOrder(itemsPayload);
+      await orderService.createOrder({
+        userId: Number(userId),
+        items: itemsPayload
+      });
 
-      // 3. Xóa các item trong giỏ hàng sau khi tạo đơn thành công
       for (const item of cart.items) {
         await cartService.deleteCartItem(userId, item.id);
       }
 
-      // 4. Chuyển hướng sang trang danh sách đơn hàng
       navigate('/orders');
+
     } catch (error) {
       console.error("Đặt hàng thất bại:", error);
       alert("Đặt hàng không thành công. Vui lòng thử lại!");
