@@ -2,19 +2,19 @@ package Project.Controller;
 
 import org.springframework.web.bind.annotation.*;
 
+import Project.Service.ChatService;
 import Project.Service.GeminiService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @RestController
+@AllArgsConstructor 
 public class ChatController {
 
-    private final GeminiService geminiService;
-
-    public ChatController(GeminiService geminiService) {
-        this.geminiService = geminiService;
-    }
+    private final ChatService chatService;
 
     @PostMapping("/chat")
     public String chat(@RequestBody String message) {
-        return geminiService.chat(message);
+        return chatService.chat(message);
     }
 }
