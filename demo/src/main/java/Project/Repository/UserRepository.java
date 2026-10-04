@@ -11,6 +11,7 @@ import Project.Model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> { 
 	Optional<User> findById(Integer id);
+	
     Optional<User> findByName(String name);
 
 	Optional<User> findByNameAndEmail(String name, String email);

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import Project.Helper.exception.ResourceNotFoundException;
@@ -90,8 +93,15 @@ public class OrderService {
         order.setTotalPrice(totalPrice);
         order.setOrderItems(orderItems);
 
-        User user = this.userRepository.findById(request.getUserId())
-                                        .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay user"));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	String email = auth.getName();
+
+        System.out.println("AUTH NAME = [" + auth.getName() + "]");
+        System.out.println("PRINCIPAL = [" + auth.getPrincipal() + "]");
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Khong tim thay user"));
 
         order.setUser(user);
         return convertOrderToDTO(

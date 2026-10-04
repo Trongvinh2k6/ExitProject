@@ -60,7 +60,11 @@ public class SecurityConfig {
 
     @Bean 
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request.anyRequest().permitAll()
+        http.authorizeHttpRequests(request -> request
+                                    .requestMatchers("/auth/login", "/auth/register", 
+                                    "/products", "/products/{id}"
+                                    ).permitAll()
+                                    .anyRequest().authenticated()
         );
 
         http.oauth2ResourceServer(oath2 -> oath2
