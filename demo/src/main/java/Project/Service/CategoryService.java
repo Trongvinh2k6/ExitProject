@@ -112,5 +112,12 @@ public class CategoryService {
 
         this.categoryRepository.deleteById(id);
     }
+
+    public List<String> getCategoryNames() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(Category::getName)
+                .toList();
+    }
 }
 

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import Project.Model.Brand;
 import Project.Model.Product;
 
 @Repository 
@@ -28,12 +29,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer>{
         FROM Product p
         WHERE
             (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+            AND (:brand IS NULL OR LOWER(p.brand.name) = LOWER(:brand))
             AND (:minPrice IS NULL OR p.price >= :minPrice)
             AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+            AND (:category IS NULL OR LOWER(p.category.name) = LOWER(:category))
     """)
     List<Product> searchProducts(
             @Param("keyword") String keyword,
+            @Param("brand") String brand,
             @Param("minPrice") Integer minPrice,
-            @Param("maxPrice") Integer maxPrice
+            @Param("maxPrice") Integer maxPrice,
+            @Param("category") String category
     );
 }

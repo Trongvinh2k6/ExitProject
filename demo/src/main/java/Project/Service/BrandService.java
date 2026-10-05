@@ -67,4 +67,11 @@ public class BrandService {
         } 
         this.brandRepository.deleteById(id); 
     }
+
+    public List<String> getBrandNames() {
+        return brandRepository.findAll()
+                .stream()
+                .map(Brand::getName)
+                .toList();
+    }
 }
