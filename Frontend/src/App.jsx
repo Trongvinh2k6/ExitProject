@@ -16,6 +16,7 @@ import Profile from './pages/Profile';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import Chatbot from "./components/Chatbot";
 
 function App() {
 
@@ -73,7 +74,7 @@ function App() {
 
             </Routes>
 
-
+            <Chatbot />
         </BrowserRouter>
 
     );

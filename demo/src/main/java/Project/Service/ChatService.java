@@ -33,54 +33,76 @@ public class ChatService {
                         categories,
                         brands
                 );
+        
+        boolean hasCriteria =
+            criteria.getKeyword() != null ||
+            criteria.getBrand() != null ||
+            criteria.getMinPrice() != null ||
+            criteria.getMaxPrice() != null ||
+            criteria.getCategory() != null;
 
-        // 3. Dùng điều kiện Gemini trả về để tìm sản phẩm trong database
-        List<ProductResponseDTO> products =
-                productService.searchProducts(
-                        criteria.getKeyword(),
-                        criteria.getBrand(),
-                        criteria.getMinPrice(),
-                        criteria.getMaxPrice(),
-                        criteria.getCategory()
-                );
+        // Không có điều kiện tìm kiếm -> chỉ chat
+        if (!hasCriteria) {
+                String reply = geminiService.chat("""
+                        Bạn là chatbot của cửa hàng giày ProjectSkateBoard.
+                        Hãy trả lời ngắn gọn câu hỏi của khách hàng bằng tiếng Việt.
+                        
+                        Khách hàng:
+                        %s
+                        """.formatted(message));
 
-        // 4. Chuyển danh sách sản phẩm thành context cho Gemini
-        StringBuilder productInfo = new StringBuilder();
-
-        for (ProductResponseDTO product : products) {
-
-            productInfo.append("- ")
-                    .append(product.getName())
-                    .append(" - ")
-                    .append(product.getPrice())
-                    .append(" VND\n");
+                return new ChatResponseDTO(reply, List.of());
         }
+        else {
+                // 3. Dùng điều kiện Gemini trả về để tìm sản phẩm trong database
+                List<ProductResponseDTO> products =
+                        productService.searchProducts(
+                                criteria.getKeyword(),
+                                criteria.getBrand(),
+                                criteria.getMinPrice(),
+                                criteria.getMaxPrice(),
+                                criteria.getCategory()
+                        );
 
-        // 5. Gemini tạo câu trả lời tự nhiên
-        String prompt = """
-                Bạn là chatbot của cửa hàng giày ProjectSkateBoard.
+                // 4. Chuyển danh sách sản phẩm thành context cho Gemini
+                StringBuilder productInfo = new StringBuilder();
 
-                Khách hàng hỏi:
+                for (ProductResponseDTO product : products) {
 
-                %s
+                productInfo.append("- ")
+                        .append(product.getName())
+                        .append(" - ")
+                        .append(product.getPrice())
+                        .append(" VND\n");
+                }
 
-                Các sản phẩm tìm được trong database:
+                // 5. Gemini tạo câu trả lời tự nhiên
+                String prompt = """
+                        Bạn là chatbot của cửa hàng giày ProjectSkateBoard.
 
-                %s
+                        Khách hàng hỏi:
 
-                Hãy tư vấn cho khách hàng dựa trên danh sách sản phẩm trên.
+                        %s
 
-                Không được tự tạo ra sản phẩm không có trong danh sách.
+                        Các sản phẩm tìm được trong database:
 
-                Nếu danh sách sản phẩm trống,
-                hãy nói rằng hiện tại không tìm thấy sản phẩm phù hợp.
+                        %s
 
-                Trả lời bằng tiếng Việt.
-                """.formatted(message, productInfo);
+                        Hãy tư vấn cho khách hàng dựa trên danh sách sản phẩm trên.
 
-        String reply = geminiService.chat(prompt);
+                        Không được tự tạo ra sản phẩm không có trong danh sách.
 
-        // 6. Trả cả câu trả lời + danh sách sản phẩm về frontend
-        return new ChatResponseDTO(reply, products);
+                        Nếu danh sách sản phẩm trống,
+                        hãy nói rằng hiện tại không tìm thấy sản phẩm phù hợp.
+
+                        Trả lời bằng tiếng Việt.
+                        """.formatted(message, productInfo);
+
+                String reply = geminiService.chat(prompt);
+
+
+                // 6. Trả cả câu trả lời + danh sách sản phẩm về frontend
+                return new ChatResponseDTO(reply, products);
+        }
     }
 }

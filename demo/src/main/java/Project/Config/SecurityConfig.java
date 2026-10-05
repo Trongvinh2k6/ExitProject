@@ -63,7 +63,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
                                     .requestMatchers("/auth/login", "/auth/register", 
-                                    "/products", "/products/{id}"
+                                    "/products", "/products/{id}", "/ws/**"
                                     ).permitAll()
                                     .anyRequest().authenticated()
         );
